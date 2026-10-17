@@ -71,6 +71,7 @@ def create_app(models=None):
                         audio = decode_audio(event["pcm"])
                         last_turn = turn
                         if audio is None:
+                            await session.cancel()
                             await ws.send_json({"type": "empty", "turn_id": turn})
                         else:
                             await session.start(turn, audio)

@@ -11,3 +11,6 @@ models/
 *.mp4
 artifacts/
 frontend/public/vad/
+frontend/test-results/
+frontend/playwright-report/
+*.tsbuildinfo

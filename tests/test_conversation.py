@@ -103,3 +103,49 @@ async def test_model_failure_is_a_recoverable_error():
     await session.task
     assert events[-1]["type"] == "error"
     assert events[-1]["message"] == "model unavailable"
+
+
+@pytest.mark.asyncio
+async def test_synthesis_failure_does_not_deadlock_the_text_producer():
+    class BrokenSpeech(FakeModels):
+        async def chat(self, messages):
+            for _ in range(20):
+                yield "A sentence. "
+
+        async def synthesize(self, text):
+            raise RuntimeError("Synthesis failed")
+
+    events = []
+
+    async def send(event):
+        events.append(event)
+
+    session = Conversation(BrokenSpeech(), send)
+    await session.start(1, np.ones(4000))
+    await asyncio.wait_for(session.task, timeout=1)
+    assert events[-1]["type"] == "error"
+
+
+@pytest.mark.asyncio
+async def test_cancel_closes_stream_even_when_waiting_for_audio_backpressure():
+    class EndlessText(FakeModels):
+        closed = False
+
+        async def chat(self, messages):
+            try:
+                for _ in range(100):
+                    yield "A sentence. "
+            finally:
+                self.closed = True
+
+    models = EndlessText()
+
+    async def send(event):
+        pass
+
+    session = Conversation(models, send)
+    await session.start(1, np.ones(4000))
+    for _ in range(50):
+        await asyncio.sleep(0)
+    await session.cancel()
+    assert models.closed
