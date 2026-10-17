@@ -1,0 +1,133 @@
+{
+  "method": "Synthetic Piper prompts; real STT/LLM/TTS; immediate headless audio acknowledgements. Excludes microphone VAD, actual playback, and endpoint delay. Not acoustic latency.",
+  "summary": {
+    "stt_ms": {
+      "median": 1740.8,
+      "p95": 2452.2
+    },
+    "first_text_ms": {
+      "median": 2480.6,
+      "p95": 4381.3
+    },
+    "first_audio_received_ms": {
+      "median": 4237.3,
+      "p95": 6785.6
+    },
+    "server_total_ms": {
+      "median": 5658.5,
+      "p95": 7382.9
+    }
+  },
+  "turns": [
+    {
+      "prompt": "My name is Mira. Please remember it.",
+      "transcript": "My name is Mira, please remember it.",
+      "response": "Got it, I'll remember your name is Mira. How can I help you today?",
+      "first_audio_received_ms": 3004.1583999991417,
+      "stt_ms": 1692.5,
+      "first_text_ms": 2145.2,
+      "first_audio_ready_ms": 2998.7,
+      "tts_ms": 980.8,
+      "server_total_ms": 3440.7
+    },
+    {
+      "prompt": "What is my name?",
+      "transcript": "What is my name?",
+      "response": "Your name is Mira, as we just agreed. What else would you like to talk about or do?",
+      "first_audio_received_ms": 2761.6739999793936,
+      "stt_ms": 1676.9,
+      "first_text_ms": 1897.0,
+      "first_audio_ready_ms": 2757.9,
+      "tts_ms": 1107.6,
+      "server_total_ms": 3308.2
+    },
+    {
+      "prompt": "What makes the sky blue?",
+      "transcript": "What makes the sky blue?",
+      "response": "That's a great question! The sky looks blue because gas molecules in the air scatter sunlight, but it also feels good to chat with you. How are you doing today?",
+      "first_audio_received_ms": 2567.1562000061385,
+      "stt_ms": 1732.4,
+      "first_text_ms": 1985.8,
+      "first_audio_ready_ms": 2563.4,
+      "tts_ms": 1880.5,
+      "server_total_ms": 4378.4
+    },
+    {
+      "prompt": "Give me one tip for a job interview.",
+      "transcript": "Give me one tip for a job interview.",
+      "response": "One simple tip is to arrive early and dress professionally; confidence helps too! Do you have any other questions or need help with something else?",
+      "first_audio_received_ms": 3493.110399984289,
+      "stt_ms": 1749.1,
+      "first_text_ms": 2094.5,
+      "first_audio_ready_ms": 3480.8,
+      "tts_ms": 1557.9,
+      "server_total_ms": 4121.0
+    },
+    {
+      "prompt": "What is photosynthesis?",
+      "transcript": "What is photosynthesis?",
+      "response": "Photosynthesis is the process where plants use sunlight, water, and carbon dioxide to create oxygen and sugar for their energy. It's a key part of nature that keeps our atmosphere healthy! Do you have any other questions or need help with something else?",
+      "first_audio_received_ms": 4959.661400003824,
+      "stt_ms": 2452.2,
+      "first_text_ms": 2741.0,
+      "first_audio_ready_ms": 4952.9,
+      "tts_ms": 3085.4,
+      "server_total_ms": 6633.2
+    },
+    {
+      "prompt": "Tell me a short fun fact about space.",
+      "transcript": "Tell me a short fun fact about space.",
+      "response": "Did you know some stars are actually much closer to us than the moon is? That's why they look so bright in the night sky! What other interesting facts would you like to hear?",
+      "first_audio_received_ms": 3514.893799991114,
+      "stt_ms": 1781.0,
+      "first_text_ms": 2220.1,
+      "first_audio_ready_ms": 3504.3,
+      "tts_ms": 1940.9,
+      "server_total_ms": 4683.9
+    },
+    {
+      "prompt": "How can I stay focused while studying?",
+      "transcript": "How can I stay focused while studying?",
+      "response": "Focus by breaking your study tasks into small, manageable steps and taking short breaks every hour. If you get stuck, try writing down what you're trying to figure out before continuing. You've got this! How are you feeling about your day so far?",
+      "first_audio_received_ms": 5312.100500013912,
+      "stt_ms": 1701.7,
+      "first_text_ms": 3689.7,
+      "first_audio_ready_ms": 5299.2,
+      "tts_ms": 2686.3,
+      "server_total_ms": 6985.0
+    },
+    {
+      "prompt": "What is an open weight model?",
+      "transcript": "What is an open weight model?",
+      "response": "That term sounds a bit unusual for my knowledge base; I'm not sure if it's a specific concept or if there's a typo in the question. Could you clarify what you mean, and I'll do my best to help!",
+      "first_audio_received_ms": 6007.547899993369,
+      "stt_ms": 1641.5,
+      "first_text_ms": 3793.4,
+      "first_audio_ready_ms": 6000.6,
+      "tts_ms": 1893.1,
+      "server_total_ms": 6709.0
+    },
+    {
+      "prompt": "Suggest a simple way to relax.",
+      "transcript": "suggest a simple way to relax.",
+      "response": "Try taking a deep breath and doing 10 minutes of stretching. You can also listen to calming music or read a book before bed for better relaxation. How are you feeling about your day so far?",
+      "first_audio_received_ms": 5294.151100009913,
+      "stt_ms": 1784.8,
+      "first_text_ms": 4048.5,
+      "first_audio_ready_ms": 5283.7,
+      "tts_ms": 2232.8,
+      "server_total_ms": 6738.6
+    },
+    {
+      "prompt": "What is the difference between weather and climate?",
+      "transcript": "What is the difference between weather and climate?",
+      "response": "Weather is what happens *right now* like today's rain, while climate is the long-term pattern of those changes over many years or decades. One is short-term, and the other is long-term!",
+      "first_audio_received_ms": 6785.587099991972,
+      "stt_ms": 1944.9,
+      "first_text_ms": 4381.3,
+      "first_audio_ready_ms": 6756.5,
+      "tts_ms": 2026.0,
+      "server_total_ms": 7382.9
+    }
+  ]
+}
