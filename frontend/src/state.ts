@@ -23,6 +23,7 @@ export type State = {
 export type Action =
   | { type: 'begin'; turn: number }
   | { type: 'interrupt' }
+  | { type: 'complete' }
   | { type: 'clear' }
   | { type: 'active'; value: boolean }
   | { type: 'phase'; value: Phase }
@@ -38,6 +39,7 @@ export const initialState: State = {
 export function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'begin': return { ...state, turn: action.turn, phase: 'transcribing', metrics: {}, error: null }
+    case 'complete': return { ...state, turn: -1, phase: state.active ? 'listening' : 'idle' }
     case 'interrupt': return {
       ...state, turn: -1,
       messages: state.messages.map(m => m.turn === state.turn && m.role === 'assistant'

@@ -4,7 +4,11 @@ import path from 'node:path'
 
 test('real microphone fixture goes through VAD, STT, LLM and audible playback', async ({ page }) => {
   const errors: string[] = []
+  const offsite: string[] = []
   page.on('pageerror', error => errors.push(error.message))
+  page.on('request', request => {
+    if (/^https?:/.test(request.url()) && !request.url().startsWith('http://127.0.0.1:8000/')) offsite.push(request.url())
+  })
   await page.goto('/')
   const start = page.getByRole('button', { name: 'Start conversation' })
   await expect(start).toBeEnabled({ timeout: 60_000 })
@@ -13,6 +17,7 @@ test('real microphone fixture goes through VAD, STT, LLM and audible playback', 
   await expect(page.locator('article.user')).toContainText('Mira', { timeout: 45_000 })
   await expect(page.locator('article.assistant')).not.toBeEmpty({ timeout: 45_000 })
   await expect(page.getByRole('status')).toContainText('Listening', { timeout: 60_000 })
+  await expect(page.locator('.interrupted')).toHaveCount(0)
   await page.getByText('Under the hood', { exact: true }).click()
   await expect(page.locator('dd').nth(3)).not.toHaveText('—')
   await page.screenshot({ path: '../artifacts/conversation-desktop.png', fullPage: true })
@@ -21,6 +26,7 @@ test('real microphone fixture goes through VAD, STT, LLM and audible playback', 
   await page.getByRole('button', { name: 'End conversation' }).click()
   await expect(start).toBeVisible()
   expect(errors).toEqual([])
+  expect(offsite).toEqual([])
 })
 
 test('responsive page has accessible controls and no horizontal overflow', async ({ page }) => {
@@ -63,4 +69,42 @@ test('spoken interruption stops old audio and starts the new turn', async ({ pla
     await page.screenshot({ path: '../artifacts/interruption-desktop.png', fullPage: true })
     await page.getByRole('button', { name: 'End conversation' }).click()
   } finally { await browser.close() }
+})
+
+test('microphone denial is recoverable and retry can start a conversation', async ({ page }) => {
+  await page.addInitScript(() => {
+    const original = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices)
+    let denied = false
+    navigator.mediaDevices.getUserMedia = async constraints => {
+      if (!denied) { denied = true; throw new DOMException('Microphone permission denied', 'NotAllowedError') }
+      return original(constraints)
+    }
+  })
+  await page.goto('/')
+  const start = page.getByRole('button', { name: 'Start conversation' })
+  await expect(start).toBeEnabled()
+  await start.click()
+  await expect(page.getByRole('alert')).toContainText('Microphone permission denied', { timeout: 30_000 })
+  await start.click()
+  await expect(page.getByRole('button', { name: 'End conversation' })).toBeVisible({ timeout: 30_000 })
+  await page.getByRole('button', { name: 'End conversation' }).click()
+  await expect(start).toBeVisible()
+})
+
+test('cancel during VAD loading does not resurrect the microphone', async ({ page }) => {
+  const errors: string[] = []
+  page.on('pageerror', error => errors.push(error.message))
+  await page.route('**/vad/silero_vad_v5.onnx', async route => {
+    await new Promise(resolve => setTimeout(resolve, 1500))
+    await route.continue()
+  })
+  await page.goto('/')
+  const start = page.getByRole('button', { name: 'Start conversation' })
+  await expect(start).toBeEnabled()
+  await start.click()
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click()
+  await expect(start).toBeVisible()
+  await page.waitForTimeout(2500) // Allow the intentionally delayed initializer to settle.
+  await expect(page.getByRole('button', { name: 'End conversation' })).toHaveCount(0)
+  expect(errors).toEqual([])
 })

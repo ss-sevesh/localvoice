@@ -1,6 +1,7 @@
 import type { MicVAD } from '@ricky0123/vad-web'
 import { AudioPlayer, encodePCM } from './audio'
 import type { Action, ServerEvent } from './state'
+import { disposeVad } from './vad-cleanup'
 
 /** Owns browser resources; React only observes their user-visible state. */
 export class VoiceClient {
@@ -17,6 +18,7 @@ export class VoiceClient {
   private serverDone = false
   private limitTimer: ReturnType<typeof setTimeout> | undefined
   private active = false
+  private openingStream: MediaStream | null = null
 
   constructor(private dispatch: (action: Action) => void) {}
 
@@ -67,11 +69,23 @@ export class VoiceClient {
         baseAssetPath: '/vad/', onnxWASMBasePath: '/vad/',
         redemptionMs: 600, preSpeechPadMs: 300, minSpeechMs: 250,
         positiveSpeechThreshold: 0.6, negativeSpeechThreshold: 0.35,
+        getStream: async () => {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: {
+            channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true,
+          } })
+          if (epoch !== this.epoch) {
+            stream.getTracks().forEach(track => track.stop())
+            throw new DOMException('Microphone startup was cancelled.', 'AbortError')
+          }
+          this.openingStream = stream
+          return stream
+        },
         onFrameProcessed: (probability) => {
+          if (epoch !== this.epoch) return
           if (probability.isSpeech > 0.35) this.lastVoiceAt = performance.now()
         },
         onSpeechRealStart: () => {
-          if (!this.active) return
+          if (epoch !== this.epoch || !this.active) return
           this.interrupt()
           this.dispatch({ type: 'mic', value: true })
           this.limitTimer = setTimeout(() => {
@@ -79,9 +93,11 @@ export class VoiceClient {
           }, 30_000)
         },
         onVADMisfire: () => {
+          if (epoch !== this.epoch) return
           this.dispatch({ type: 'mic', value: false })
         },
         onSpeechEnd: audio => {
+          if (epoch !== this.epoch) return
           clearTimeout(this.limitTimer)
           if (!this.active) return
           this.dispatch({ type: 'mic', value: false })
@@ -98,10 +114,16 @@ export class VoiceClient {
           this.send({ type: 'speech', turn_id: this.turn, pcm: encodePCM(audio) })
         },
       })
-      if (epoch !== this.epoch) { await vad.destroy(); return }
+      if (epoch !== this.epoch) { await disposeVad(vad); return }
+      try {
+        await vad.start()
+      } catch (error) {
+        await disposeVad(vad)
+        throw error
+      }
+      if (epoch !== this.epoch) { await disposeVad(vad); return }
       this.vad = vad
-      await vad.start()
-      if (epoch !== this.epoch) { await vad.destroy(); return }
+      this.openingStream = null
       this.active = true
       this.dispatch({ type: 'active', value: true })
     } catch (error) {
@@ -134,7 +156,9 @@ export class VoiceClient {
     this.interrupt()
     const vad = this.vad
     this.vad = null
-    if (vad) void vad.destroy().catch(() => {})
+    if (vad) void disposeVad(vad).catch(error => console.error('VAD cleanup failed', error))
+    this.openingStream?.getTracks().forEach(track => track.stop())
+    this.openingStream = null
     const socket = this.socket
     this.socket = null
     if (socket) socket.close()
@@ -153,7 +177,7 @@ export class VoiceClient {
   private finishIfIdle() {
     if (this.serverDone && !this.player?.busy && this.turn !== -1) {
       this.dispatch({ type: 'metrics', value: { total_ms: performance.now() - this.sentAt } })
-      this.dispatch({ type: 'phase', value: 'listening' })
+      this.dispatch({ type: 'complete' })
       this.turn = -1
     }
   }
