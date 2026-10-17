@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.pyc
+node_modules/
+dist/
+models/
+.env
+*.wav
+*.mp4
+artifacts/
+frontend/public/vad/
