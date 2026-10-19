@@ -29,7 +29,7 @@
 
 ## Watch the demo
 
-<a href="https://ss-sevesh.github.io/localvoice/watch.html"><img src="docs/assets/demo-thumbnail.png" alt="Play the Local Voice demo — AI that talks back in English, Hindi and Hinglish" width="100%" /></a>
+<a href="https://ss-sevesh.github.io/localvoice/assets/local-voice-demo-1.25x.mp4"><img src="docs/assets/demo-thumbnail.png" alt="Play the Local Voice demo — AI that talks back in English, Hindi and Hinglish" width="100%" /></a>
 
 **English + Hindi · 2:01 · 1.25× playback · sound on**
 
