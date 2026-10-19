@@ -33,8 +33,6 @@
 
 **English + Hindi · 2:01 · 1.25× playback · sound on**
 
-https://github.com/user-attachments/assets/3bb6e61a-1cca-450a-a1ea-0792584dde63
-
 <p align="center">
   <a href="https://github.com/ss-sevesh/localvoice/releases/download/demo-v1/local-voice-demo-1.25x.mp4">Download the 1.25× version</a> ·
   <a href="https://github.com/ss-sevesh/localvoice/releases/download/demo-v1/local-voice-demo.mp4">Original-speed video · 2:31</a> ·
