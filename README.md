@@ -29,9 +29,9 @@
 
 ## Watch the demo
 
-<a href="https://ss-sevesh.github.io/localvoice/assets/local-voice-demo-1.25x.mp4"><img src="docs/assets/demo-thumbnail.png" alt="Play the Local Voice demo — AI that talks back in English, Hindi and Hinglish" width="100%" /></a>
+**English + Hindi · 2:02 · 1.25× playback · sound on**
 
-**English + Hindi · 2:01 · 1.25× playback · sound on**
+https://github.com/user-attachments/assets/6618d66d-06e4-46e4-a843-9ac6cde7aeba
 
 <p align="center">
   <a href="https://github.com/ss-sevesh/localvoice/releases/download/demo-v1/local-voice-demo-1.25x.mp4">Download the 1.25× version</a> ·
