@@ -1,0 +1,291 @@
+{
+  "method": "Synthetic microphone in Chrome; real local models and playback. App measures last VAD speech frame to AudioBufferSource.start. Not acoustic latency. Three warmups excluded.",
+  "health": {
+    "ready": true,
+    "error": null,
+    "load_seconds": 10.553,
+    "stt_device": "cuda",
+    "tts_device": "cuda",
+    "stt_compute_type": "int8_float16",
+    "warning": null,
+    "models": {
+      "stt": "medium · multilingual",
+      "llm": "qwen3:4b-instruct-2507-q4_K_M",
+      "tts": "Kokoro · Omega (same speaker for EN / HI)"
+    }
+  },
+  "overall": {
+    "count": 30,
+    "median_ms": 3499,
+    "p95_ms": 5406
+  },
+  "by_language": {
+    "english": {
+      "count": 10,
+      "median_ms": 2476,
+      "p95_ms": 3080
+    },
+    "hindi": {
+      "count": 10,
+      "median_ms": 4642,
+      "p95_ms": 6202
+    },
+    "hinglish": {
+      "count": 10,
+      "median_ms": 3927,
+      "p95_ms": 5035
+    }
+  },
+  "target_passed": false,
+  "turns": [
+    {
+      "language": "english",
+      "prompt": "Please tell me one fact about cats.",
+      "file": "english-1.wav",
+      "input_seconds": 2.125,
+      "first_audible_ms": 2522,
+      "transcript": "Y\nYou\nEnglish\n\nPlease tell me one fact about cats."
+    },
+    {
+      "language": "english",
+      "prompt": "Here is my question. How can I focus on my work today?",
+      "file": "english-2.wav",
+      "input_seconds": 3.262,
+      "first_audible_ms": 2322,
+      "transcript": "Y\nYou\nEnglish\n\nHere is my question, how can I focus on my work today?"
+    },
+    {
+      "language": "english",
+      "prompt": "Please explain photosynthesis simply.",
+      "file": "english-3.wav",
+      "input_seconds": 2.148,
+      "first_audible_ms": 2430,
+      "transcript": "Y\nYou\nEnglish\n\nPlease explain photosynthesis simply."
+    },
+    {
+      "language": "english",
+      "prompt": "Here is my question. Why does the sky look blue?",
+      "file": "english-4.wav",
+      "input_seconds": 2.937,
+      "first_audible_ms": 2557,
+      "transcript": "Y\nYou\nEnglish\n\nHere is my question. Why does the sky look blue?"
+    },
+    {
+      "language": "english",
+      "prompt": "Here is my question. Give me a simple tip for studying.",
+      "file": "english-5.wav",
+      "input_seconds": 3.39,
+      "first_audible_ms": 2711,
+      "transcript": "Y\nYou\nEnglish\n\nHere is my question. Give me a simple tip for studying."
+    },
+    {
+      "language": "english",
+      "prompt": "Here is my question. How do I prepare for an interview?",
+      "file": "english-6.wav",
+      "input_seconds": 3.088,
+      "first_audible_ms": 2074,
+      "transcript": "Y\nYou\nEnglish\n\nHere is my question. How do I prepare for an interview?"
+    },
+    {
+      "language": "english",
+      "prompt": "What is the difference between weather and climate?",
+      "file": "english-7.wav",
+      "input_seconds": 2.531,
+      "first_audible_ms": 2261,
+      "transcript": "Y\nYou\nEnglish\n\nWhat is the difference between weather and climate?"
+    },
+    {
+      "language": "english",
+      "prompt": "Suggest a simple way to relax today.",
+      "file": "english-8.wav",
+      "input_seconds": 2.345,
+      "first_audible_ms": 2004,
+      "transcript": "Y\nYou\nEnglish\n\nSo just a simple way to relax today."
+    },
+    {
+      "language": "english",
+      "prompt": "Here is my question. Why is drinking water important?",
+      "file": "english-9.wav",
+      "input_seconds": 2.926,
+      "first_audible_ms": 3080,
+      "transcript": "Y\nYou\nEnglish\n\nHere is my question, why is drinking water important?"
+    },
+    {
+      "language": "english",
+      "prompt": "Here is my question. Tell me something interesting about the moon.",
+      "file": "english-10.wav",
+      "input_seconds": 3.367,
+      "first_audible_ms": 2806,
+      "transcript": "Y\nYou\nEnglish\n\nHere is my question, tell me something interesting about the moon."
+    },
+    {
+      "language": "hindi",
+      "prompt": "मुझे बिल्लियों के बारे में एक बात बताओ।",
+      "file": "hindi-1.wav",
+      "input_seconds": 2.601,
+      "first_audible_ms": 5188,
+      "transcript": "Y\nYou\nHindi\n\nमुझे बिल्लीों के बारे में एक बात बताओ"
+    },
+    {
+      "language": "hindi",
+      "prompt": "मैं आज अपना काम कैसे पूरा करूँ?",
+      "file": "hindi-2.wav",
+      "input_seconds": 2.02,
+      "first_audible_ms": 4723,
+      "transcript": "Y\nYou\nHindi\n\nमैं आज अपना काम कैसे पूरा करूँग।"
+    },
+    {
+      "language": "hindi",
+      "prompt": "मेरे एक सवाल का जवाब दो। पौधे अपना खाना कैसे बनाते हैं?",
+      "file": "hindi-3.wav",
+      "input_seconds": 3.831,
+      "first_audible_ms": 4837,
+      "transcript": "Y\nYou\nHindi\n\nमेरे एक सबाल का जबाब दो पोद्य अपना खानग केसे बनाती हैं?"
+    },
+    {
+      "language": "hindi",
+      "prompt": "मेरे एक सवाल का जवाब दो। आसमान नीला क्यों दिखता है?",
+      "file": "hindi-4.wav",
+      "input_seconds": 3.68,
+      "first_audible_ms": 5406,
+      "transcript": "Y\nYou\nHindi\n\nमेरे एक सबाल का जबाब दो, आस्मान नीला क्यों दिकता है?"
+    },
+    {
+      "language": "hindi",
+      "prompt": "मुझे पढ़ाई के लिए एक सुझाव दो।",
+      "file": "hindi-5.wav",
+      "input_seconds": 2.241,
+      "first_audible_ms": 3855,
+      "transcript": "Y\nYou\nHindi\n\nमुझे परहाई के लिए एक सुझाव दो"
+    },
+    {
+      "language": "hindi",
+      "prompt": "मेरे एक सवाल का जवाब दो। मुझे अच्छी नींद कैसे आएगी?",
+      "file": "hindi-6.wav",
+      "input_seconds": 3.646,
+      "first_audible_ms": 3298,
+      "transcript": "Y\nYou\nHindi\n\nमेरे एक सवाल का जवाब दो, मुझे अच्छी निन कैसे आएगी?"
+    },
+    {
+      "language": "hindi",
+      "prompt": "मेरे एक सवाल का जवाब दो। मौसम रोज क्यों बदलता है?",
+      "file": "hindi-7.wav",
+      "input_seconds": 3.622,
+      "first_audible_ms": 4560,
+      "transcript": "Y\nYou\nHindi\n\nमेरे एक सबाल का जबाब दो, मोसम रोज क्यूं बदलता है?"
+    },
+    {
+      "language": "hindi",
+      "prompt": "तनाव कम करने का एक तरीका बताओ।",
+      "file": "hindi-8.wav",
+      "input_seconds": 2.473,
+      "first_audible_ms": 6202,
+      "transcript": "Y\nYou\nHindi\n\nतनाव कम करने का एक तरीका बताओ"
+    },
+    {
+      "language": "hindi",
+      "prompt": "मेरे एक सवाल का जवाब दो। पानी पीना क्यों जरूरी है?",
+      "file": "hindi-9.wav",
+      "input_seconds": 3.553,
+      "first_audible_ms": 4333,
+      "transcript": "Y\nYou\nHindi\n\nमेरे एक सवाल का जवाब दो, पानी पीना क्यों जरूरी है?"
+    },
+    {
+      "language": "hindi",
+      "prompt": "मुझे चाँद के बारे में कुछ बताओ।",
+      "file": "hindi-10.wav",
+      "input_seconds": 2.113,
+      "first_audible_ms": 3405,
+      "transcript": "Y\nYou\nHindi\n\nमुझे चांद के बारे में कुछ बताओ।"
+    },
+    {
+      "language": "hinglish",
+      "prompt": "मेरा जॉब इंटरव्यू कल है, एक सिंपल टिप दो।",
+      "file": "hinglish-1.wav",
+      "input_seconds": 2.995,
+      "first_audible_ms": 3090,
+      "transcript": "Y\nYou\nHindi\n\nमेरा जोब इंटर्वियू कल है एक सिंपर टिब दो"
+    },
+    {
+      "language": "hinglish",
+      "prompt": "मेरी मीटिंग है, प्लीज़ एक टिप दो।",
+      "file": "hinglish-2.wav",
+      "input_seconds": 2.589,
+      "first_audible_ms": 3852,
+      "transcript": "Y\nYou\nHindi\n\nमेरी मीटिंग है। प्लीज एक टिप दो।"
+    },
+    {
+      "language": "hinglish",
+      "prompt": "मेरे प्रोजेक्ट के लिए एक आइडिया दो।",
+      "file": "hinglish-3.wav",
+      "input_seconds": 2.252,
+      "first_audible_ms": 4002,
+      "transcript": "Y\nYou\nHindi\n\nमेरे प्रोजेक्ट के लिए एक आई दिया दो"
+    },
+    {
+      "language": "hinglish",
+      "prompt": "मुझे स्टडी के लिए एक सिंपल टिप दो।",
+      "file": "hinglish-4.wav",
+      "input_seconds": 2.334,
+      "first_audible_ms": 4624,
+      "transcript": "Y\nYou\nHindi\n\nमुझे स्टरी के लिरे एक सिंपर टिप दो"
+    },
+    {
+      "language": "hinglish",
+      "prompt": "मेरी टीम के लिए एक अच्छी टिप दो।",
+      "file": "hinglish-5.wav",
+      "input_seconds": 2.31,
+      "first_audible_ms": 4076,
+      "transcript": "Y\nYou\nHindi\n\nमैरी तीम के लिए एक अच्छी टिप दो"
+    },
+    {
+      "language": "hinglish",
+      "prompt": "मुझे अपना टाइम मैनेज करना है, हेल्प करो।",
+      "file": "hinglish-6.wav",
+      "input_seconds": 2.821,
+      "first_audible_ms": 3593,
+      "transcript": "Y\nYou\nHindi\n\nमुझे अपना टाइन मैनेज करना है। हिल्प करो।"
+    },
+    {
+      "language": "hinglish",
+      "prompt": "मेरा एग्जाम कल है, कोई स्टडी टिप दो।",
+      "file": "hinglish-7.wav",
+      "input_seconds": 2.833,
+      "first_audible_ms": 5035,
+      "transcript": "Y\nYou\nHindi\n\nमेरा इजाम कल है, कौई अच्छानी टिप दो"
+    },
+    {
+      "language": "hinglish",
+      "prompt": "मैं एक नई स्किल सीखना चाहता हूँ।",
+      "file": "hinglish-8.wav",
+      "input_seconds": 2.461,
+      "first_audible_ms": 2935,
+      "transcript": "Y\nYou\nHindi\n\nमैं एक नेई स्किल सीखना चाहता हूं।"
+    },
+    {
+      "language": "hinglish",
+      "prompt": "मुझे अपने काम पर फोकस करना है, टिप दो।",
+      "file": "hinglish-9.wav",
+      "input_seconds": 3.053,
+      "first_audible_ms": 2831,
+      "transcript": "Y\nYou\nHindi\n\nमुझे अपने काम पर फोकस करना है। टिब दो"
+    },
+    {
+      "language": "hinglish",
+      "prompt": "मेरा ऑफिस आज बहुत बिजी है, हेल्प करो।",
+      "file": "hinglish-10.wav",
+      "input_seconds": 2.868,
+      "first_audible_ms": 4572,
+      "transcript": "Y\nYou\nHindi\n\nमेरा आफिस आज बहुत दिजी है, हिल्प करो"
+    }
+  ],
+  "recorded_at_utc": "2026-10-19T06:03:50.828817+00:00",
+  "source_commit": "ba1f63fe180015c069118583089ab27e173489ca",
+  "hardware": {
+    "cpu": "Intel Core i7-13620H",
+    "ram_gb": 16,
+    "gpu": "NVIDIA RTX 4060 Laptop",
+    "gpu_vram_gb": 8,
+    "os": "Windows"
+  }
+}

@@ -1,5 +1,41 @@
 # Review and verification
 
+## Assignment audit: 2026-10-19
+
+Mapped every required capability, technical expectation, bonus feature, and deliverable
+in the [submission checklist](submission-checklist.md). Inspected the real STT/LLM/TTS
+implementation, bounded spoken history, local model setup, browser asset copying,
+and recording assertions. Core inference has a fixed local Ollama endpoint and local
+speech weights; model download services are used during setup, not hosted inference.
+Checked the upstream Whisper, Qwen and Kokoro model sources and existing notices.
+
+Fresh checks: **54 backend tests, 20 frontend tests, all 12 Chrome scenarios**, Ruff,
+ESLint, TypeScript and Vite production build passed. Browser scenarios include actual
+English/Hindi/Hinglish inference/playback, English/Hindi spoken interruptions, account
+flows, microphone recovery, responsive layouts and accessibility. The network check
+for the real voice flow detected no offsite application HTTP requests.
+
+The controlled 30-turn repeat measured **3,499 ms median / 5,406 ms p95**. It failed
+the existing 3s/5s internal budget, without any assertions or thresholds being weakened.
+Published [raw results](benchmark-current.json), refreshed the README's headline
+timings, and retained historical baselines separately. A four-input follow-up probe
+showed contributions from STT, sentence completion, and synthesis; it did not isolate
+the historical regression. It also exposed answer-quality limitations in Hindi and
+Hinglish. The assessment should distinguish working multilingual speech from robust
+factual accuracy and human-rated naturalness.
+
+Verified both MP4s have H.264 video and 48 kHz AAC audio: 151.0 seconds original,
+120.8 seconds at 1.25×. The published README uses a native GitHub attachment player,
+previously checked with unmuted playback. Both encoded exports were checked for
+recognizable English and Hindi questions and actual replies. Synthetic input and
+speed adjustment are disclosed; original-speed timing values are unchanged.
+
+Fixed an outdated architecture paragraph that denied database storage after local
+account support was added. Clarified the short-clip beam policy in the README.
+No application logic changed. A clean installation on a different machine and human
+headset/accent/noise listening were not performed during this audit. Assignment
+receipt date and deadline are not available; no submission was sent to the company.
+
 ## Interruption transcription hardening
 
 User confirmed the incorrect "Thank you" appeared in the transcript. Inspection found

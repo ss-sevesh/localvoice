@@ -10,9 +10,45 @@ or rerun the controlled 30-turn benchmark below. Both input and reply audio are
 present in both exported MP4s. Playback speed does not change the original measured
 latency; see `docs/demo.md` for chapters and the recording method.
 
-## One speaker: Kokoro Omega on CUDA
+## Current submission audit: 2026-10-19
 
-Final same-speaker run: 30 synthetic Chrome microphone turns (10 per language), with
+Reran the existing fixed-fixture benchmark after all 12 Chrome scenarios, including
+real-model voice flows, passed. Thirty measured turns (ten per language style), three excluded warmups,
+current short-clip confidence policy, and real browser VAD/decode/playback. No other
+inference tests ran concurrently. Whisper medium and Kokoro used CUDA; Ollama
+reported Qwen running 100% on the GPU. Hardware: i7-13620H, 16 GB RAM,
+RTX 4060 Laptop with 8 GB VRAM, Windows.
+
+| Language | Median | p95 |
+|---|---:|---:|
+| All 30 turns | **3,499 ms** | **5,406 ms** |
+| English (10) | 2,476 ms | 3,080 ms |
+| Hindi (10) | 4,642 ms | 6,202 ms |
+| Hinglish (10) | 3,927 ms | 5,035 ms |
+
+**The internal ≤3s median / ≤5s p95 budget did not pass.** The benchmark exited
+with status 1 and `target_passed: false`; neither threshold was relaxed. The
+assignment specifies no numerical cutoff, so these are observed results and a
+remaining performance limitation, not a claim that a particular latency was required
+or achieved. [Raw current report](benchmark-current.json) includes every fixture,
+transcript, measurement, model/device health, source commit, and hardware profile.
+The metric runs from the last positive VAD frame to browser playback scheduling;
+it is not acoustic latency. Video speed has no bearing on these results.
+
+A separate four-input diagnostic after the benchmark used actual local inference
+with immediate headless playback acknowledgements. In its Hindi cat-fact example,
+recognition took 1,158 ms, the language-selection call 124 ms, first text arrived at
+1,359 ms, and the first audio was ready at 3,618 ms; first-chunk synthesis took
+908 ms. Time also accumulates while completing a sentence before synthesis.
+These figures exclude browser/VAD endpointing and do not replace the benchmark.
+They do not isolate the cause of the difference from the older run. Generated
+answers also contained factual and Hinglish-quality errors: script checks establish
+supported character sets, not semantic accuracy or fluency. No application behavior
+or performance assertions were changed to obtain the audit results.
+
+## Earlier same-speaker run: Kokoro Omega on CUDA
+
+Earlier same-speaker run: 30 synthetic Chrome microphone turns (10 per language), with
 three excluded warmups and the same fixed input recordings as the Piper recovery run.
 Whisper medium, Qwen and Kokoro FP32 used the RTX 4060; Kokoro retained `hm_omega`
 for all languages. Speech end to browser playback start, not acoustic latency:
@@ -24,10 +60,12 @@ for all languages. Speech end to browser playback start, not acoustic latency:
 | Hindi (10) | 3,292 ms | 3,999 ms |
 | Hinglish (10) | 2,693 ms | 3,314 ms |
 
-The overall <=3s median / <=5s p95 budget passed. Current startup was 4.758s.
-Results: `artifacts/latency/playback-results.json`. No other inference ran concurrently.
+The overall <=3s median / <=5s p95 budget passed in that earlier run. Startup was 4.758s.
+Archived results: `artifacts/latency/playback-results-kokoro-before-short-policy.json`.
+No other inference ran concurrently.
 This run predates the subsequent short-interruption confidence checks and beam-3 policy
-for <=2-second clips. The full latency benchmark was not repeated for that change.
+for <=2-second clips. The current-code repeat is reported above; the earlier figures
+are retained as historical observations rather than the latest performance claim.
 
 The initial Kokoro CPU run missed the budget (3,411ms median / 6,060ms p95), archived
 in `artifacts/latency/playback-results-kokoro-cpu.json`. CUDA FP32 restored the target;

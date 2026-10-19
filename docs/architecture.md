@@ -129,6 +129,8 @@ partial sentence is excluded from context rather than pretending the complete te
 ## Deployment boundary
 
 Bind to 127.0.0.1. WebSocket origins are restricted to localhost ports 8000 and 5173.
-React renders transcript strings as text. No authentication is implemented for public
-deployment; do not expose this local development application on a public interface.
-No database, transcript logging, cloud API keys, or runtime CDN requests are required.
+React renders transcript strings as text. Local accounts use an ignored SQLite database
+with hashed passwords and revocable session cookies. This is a local application;
+public deployment is outside its supported configuration.
+Conversations are not stored in the account database. No transcript logging, cloud
+API keys, or runtime CDN requests are required. Model downloads happen during setup.

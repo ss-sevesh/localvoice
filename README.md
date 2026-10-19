@@ -71,6 +71,9 @@ workspace, and log out to stop the microphone and revoke the session.
 
 ## Submission deliverables
 
+[Requirement-by-requirement verification](docs/submission-checklist.md) maps the
+assignment to implementation, tests, and demonstration evidence.
+
 | Deliverable | Jump to |
 |---|---|
 | Complete source code | [This repository](https://github.com/ss-sevesh/localvoice) |
@@ -204,16 +207,17 @@ and [review findings and verification](docs/review.md).
 
 ## Models and measurements
 
-The same-speaker, 30-turn Chrome benchmark measured **2.47s median / 3.78s p95**
-from estimated speech end to browser playback on this laptop. It used synthetic
-microphone speech and real local inference. That benchmark predates the latest
-short-utterance recognition changes; it has not been rerun since those changes.
+The latest same-speaker, 30-turn Chrome benchmark (2026-10-19) measured
+**3.50s median / 5.41s p95** from estimated speech end to browser playback on this
+laptop. It used synthetic microphone speech and real local inference. This run
+**missed the internal ≤3s median / ≤5s p95 target**; Hindi was slower than English.
+[Raw current results](docs/benchmark-current.json) retain the failed target status.
 The demo's last turn separately measured **1,833 ms** at original speed.
 See [method, per-language results and historical baselines](docs/performance.md).
 
 | Stage | Model / configuration | Reason |
 |---|---|---|
-| STT | Multilingual `medium`, CUDA INT8-FP16, beam 1; `small` CPU INT8 fallback | English/Hindi-only language selection and explicit manual input modes |
+| STT | Multilingual `medium`, CUDA INT8-FP16, beam 3 for clips ≤2s and beam 1 otherwise; `small` CPU INT8 fallback | English/Hindi-only language selection and explicit manual input modes |
 | LLM | `qwen3:4b-instruct-2507-q4_K_M`, 192-token reply cap | Separate structured language selection followed by a streamed reply |
 | TTS | Kokoro / Omega, 24,000 Hz, CUDA FP32 or CPU INT8 | One fixed speaker for English, Hindi and Hinglish; pronunciation changes by script |
 | VAD | Silero v5 via `vad-web` 0.0.31 / local ONNX WASM | Automatic endpointing and spoken interruptions |
