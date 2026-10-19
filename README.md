@@ -1,33 +1,84 @@
-# Local Voice
+<p align="center">
+  <img src="docs/assets/hero.svg" width="100%" alt="Local Voice — think out loud, keep it local. English, Hindi and Hinglish." />
+</p>
 
-A local Hindi, English, and Hinglish voice companion built for the Trikon Software Labs AI internship assignment.
-Speak naturally, ask a follow-up, or interrupt a reply. All speech recognition, language
-generation, voice synthesis, and voice activity detection run on your machine.
+<h1 align="center">Your voice. Your language. Your own device.</h1>
 
-**React + TypeScript · FastAPI · Faster-Whisper · Ollama/Qwen · Kokoro · Silero VAD**
+<p align="center">
+  A private voice companion that listens, remembers and speaks back.<br />
+  Built for natural conversations in <strong>English, Hindi and Hinglish</strong>.
+</p>
 
-**[Watch/download the English + Hindi demo (about 2½ minutes)](https://github.com/ss-sevesh/localvoice/releases/download/demo-v1/local-voice-demo.mp4)**
+<p align="center">
+  <a href="#how-it-works"><img src="https://img.shields.io/badge/inference-100%25_local-d6baff?style=flat-square&amp;labelColor=161123" alt="All inference runs locally" /></a>
+  <a href="docs/models.md"><img src="https://img.shields.io/badge/pipeline-Whisper_%E2%86%92_Qwen_%E2%86%92_Kokoro-d6baff?style=flat-square&amp;labelColor=161123" alt="Whisper, Qwen and Kokoro" /></a>
+  <a href="#development-and-tests"><img src="https://img.shields.io/badge/verified_locally-54_backend_%C2%B7_20_frontend_%C2%B7_12_Chrome-b8ddcb?style=flat-square&amp;labelColor=161123" alt="Verified locally: 54 backend tests, 20 frontend tests and 12 Chrome scenarios" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/ss-sevesh/localvoice?style=flat-square&amp;labelColor=161123&amp;color=c1b7d2" alt="GPL source license" /></a>
+</p>
 
-Audible synthetic questions, real assistant replies, English/Hindi conversation,
-memory, streaming, VAD, a spoken interruption, architecture and live timings.
-[Chapters and recording method](docs/demo.md).
+<p align="center">
+  <a href="#watch-the-demo"><strong>Watch the demo</strong></a> ·
+  <a href="#the-experience">Features</a> ·
+  <a href="#run-on-windows">Quick start</a> ·
+  <a href="#how-it-works">Architecture</a> ·
+  <a href="docs/models.md">Models</a> ·
+  <a href="docs/performance.md">Measurements</a>
+</p>
 
-[![Watch the English and Hindi demonstration](docs/demo-preview.jpg)](https://github.com/ss-sevesh/localvoice/releases/download/demo-v1/local-voice-demo.mp4)
+---
+
+## Watch the demo
+
+**English + Hindi · 2:01 · 1.25× playback · sound on**
+
+<video src="https://github.com/ss-sevesh/localvoice/releases/download/demo-v1/local-voice-demo-1.25x.mp4" controls width="100%"></video>
+
+<p align="center">
+  <a href="https://github.com/ss-sevesh/localvoice/releases/download/demo-v1/local-voice-demo-1.25x.mp4">Download the 1.25× version</a> ·
+  <a href="https://github.com/ss-sevesh/localvoice/releases/download/demo-v1/local-voice-demo.mp4">Original-speed video · 2:31</a> ·
+  <a href="docs/demo.md">Chapters &amp; recording method</a>
+</p>
+
+Simple questions, real spoken replies, a remembered name, and a cat story interrupted
+by “just say hello.” Both sides are audible. Input and narration are synthetic;
+assistant replies come from the running local models. **Playback is sped up;
+on-screen latency values were measured at original speed.**
+
+## The experience
+
+| Speak naturally | Keep the conversation flowing | Keep it yours |
+|---|---|---|
+| **English, Hindi & Hinglish**<br />Automatic language matching, plus manual recognition modes. | **Streamed text & sentence audio**<br />Read the reply as it arrives and hear it sentence by sentence. | **Local inference**<br />Whisper, Qwen, Kokoro and VAD run on your machine. |
+| **Hands-free VAD**<br />Pause to send your words; no push-to-talk button for each turn. | **Spoken interruptions**<br />Start speaking to stop the current reply and begin a new turn. | **Session-only conversations**<br />Bounded spoken memory, no saved conversation history. |
+
+<p align="center">
+  <img src="docs/assets/conversation.gif" width="800" alt="Silent animated preview of the real English and Hindi voice workspace. Use the video above to hear both speakers." />
+  <br /><sub>Silent interface preview · the full video above includes audio.</sub>
+</p>
+
+<details>
+<summary><strong>Explore the landing page and local account experience</strong></summary>
+
+![Local Voice landing page](docs/interface.png)
+
+![Create a local account](docs/signup.png)
+
+Accounts stay in an ignored local SQLite database. Sign in, open your voice
+workspace, and log out to stop the microphone and revoke the session.
+[Design and account flow](docs/account-experience.md).
+
+</details>
 
 ## Submission deliverables
 
-| Deliverable | Location |
+| Deliverable | Jump to |
 |---|---|
-| Complete source code | [Repository](https://github.com/ss-sevesh/localvoice) |
-| Installation and setup | [Windows instructions below](#run-on-windows) |
-| 2–3 minute demonstration | [English + Hindi MP4](https://github.com/ss-sevesh/localvoice/releases/tag/demo-v1) |
-| STT → LLM → TTS architecture | [Diagram below](#how-it-works) and [architecture notes](docs/architecture.md) |
-| Models and hardware | [Model details](docs/models.md) and [hardware requirements below](#run-on-windows) |
-| Observed response latency | [Measurement method and results](docs/performance.md) |
-
-![Local Voice interface](docs/interface.png)
-
-[Preview the signup screen](docs/signup.png) · [Design and account flow](docs/account-experience.md)
+| Complete source code | [This repository](https://github.com/ss-sevesh/localvoice) |
+| Installation and setup | [Quick start](#run-on-windows) |
+| 2–3 minute demonstration | [Inline player](#watch-the-demo) · [release files](https://github.com/ss-sevesh/localvoice/releases/tag/demo-v1) |
+| STT → LLM → TTS diagram | [Architecture](#how-it-works) · [protocol details](docs/architecture.md) |
+| Models and hardware | [Models](docs/models.md) · [hardware profile](#run-on-windows) |
+| Observed response latency | [Measurements and limitations](docs/performance.md) |
 
 ## Run on Windows
 
@@ -41,9 +92,11 @@ Prerequisites: [uv](https://docs.astral.sh/uv/getting-started/installation/),
 [Node.js 24 LTS](https://nodejs.org/), [Ollama](https://ollama.com/download), and Chrome/Edge.
 Keep the Ollama application running. FFmpeg is needed only to export the automated demo.
 
-From PowerShell in this repository:
+From PowerShell:
 
 ```powershell
+git clone https://github.com/ss-sevesh/localvoice.git
+cd localvoice
 .\scripts\setup.ps1
 .\scripts\start.ps1
 ```
@@ -128,6 +181,12 @@ flowchart LR
   VAD --> Cancel[Interrupt / cancel old turn]
   Audio --> Memory[Playback acknowledgement]
   Memory --> LLM
+  classDef inference fill:#23182f,stroke:#aa8acb,color:#f4f0fc
+  classDef browser fill:#102522,stroke:#6fa59b,color:#e4fbf7
+  classDef control fill:#282132,stroke:#8b7a9f,color:#e5d9ef
+  class STT,LLM,TTS inference
+  class Mic,VAD,Audio browser
+  class Cancel,Memory control
 ```
 
 The browser sends 16 kHz mono PCM after 600 ms of silence. FastAPI transcribes it,
@@ -145,9 +204,11 @@ and [review findings and verification](docs/review.md).
 
 ## Models and measurements
 
-The current 30-turn Chrome benchmark measured **2.38s median / 3.70s p95** from
-estimated speech end to first playback, meeting the 3s / 5s target on this laptop.
-It uses synthetic microphone speech with real local inference and browser playback.
+The same-speaker, 30-turn Chrome benchmark measured **2.47s median / 3.78s p95**
+from estimated speech end to browser playback on this laptop. It used synthetic
+microphone speech and real local inference. That benchmark predates the latest
+short-utterance recognition changes; it has not been rerun since those changes.
+The demo's last turn separately measured **1,833 ms** at original speed.
 See [method, per-language results and historical baselines](docs/performance.md).
 
 | Stage | Model / configuration | Reason |
@@ -157,8 +218,8 @@ See [method, per-language results and historical baselines](docs/performance.md)
 | TTS | Kokoro / Omega, 24,000 Hz, CUDA FP32 or CPU INT8 | One fixed speaker for English, Hindi and Hinglish; pronunciation changes by script |
 | VAD | Silero v5 via `vad-web` 0.0.31 / local ONNX WASM | Automatic endpointing and spoken interruptions |
 
-Initial English-only (`base.en`) ten-turn synthetic-speech benchmark on this laptop: **4.24 s median / 6.79 s p95
-to first audio received**, excluding VAD and playback. Model initialization and warmup
+Initial English-only (`base.en`) ten-turn synthetic-speech benchmark on this laptop:
+**4.24 s median / 6.79 s p95 to first audio received**, excluding VAD and playback. Model initialization and warmup
 took **8.15 s**. These are observations from one run, not guarantees. The browser's
 timing panel measures first playback separately. The small LLM can give incorrect answers;
 the benchmark includes an example, documented in the results.
@@ -242,11 +303,12 @@ Keep other inference tests idle while measuring. CPU fallback has a separate pro
 Raw results go to `artifacts/benchmark.json`. Prompts are synthesized by Piper; this is
 reproducible integration evidence, not a representative human-speech accuracy evaluation.
 
-The generated **2-minute demonstration video** is `artifacts/local-voice-demo.mp4` when
-present. It is explicitly labelled as an automated synthetic-microphone showcase using
-real local inference. [Reproduction and human-demo guide](docs/demo.md).
-That existing video predates the light-workspace redesign; the README screenshot and
-current browser verification reflect the new interface.
+The current demo shows the desert workspace and real English/Hindi conversations.
+The **2:01 version plays at 1.25×**; the **2:31 original** is also available in the
+[same GitHub Release](https://github.com/ss-sevesh/localvoice/releases/tag/demo-v1).
+Both include audible user input, real replies and narration. The local source export
+is `artifacts/local-voice-demo.mp4`; [recording and export instructions](docs/demo.md)
+explain the synthetic input, audio checks and speed adjustment.
 
 ## Troubleshooting and limits
 
@@ -260,7 +322,7 @@ current browser verification reflect the new interface.
 - **Long speech:** recordings are capped at 30 seconds; restart with a shorter utterance.
 - **Model change:** set `OLLAMA_MODEL` before startup. Changing models requires rechecking
   supported thinking settings, latency, memory and response quality.
-- One local user, Hindi/English/Hinglish, session memory. No tool use, RAG, speaker identification,
+- Intended for one active local conversation at a time; Hindi/English/Hinglish and session memory. No tool use, RAG, speaker identification,
   or true streaming STT. Interruptions discard the currently playing partial sentence from
   memory; complete acknowledged chunks remain.
 
@@ -271,5 +333,6 @@ weights retain their own licenses. See [model and dependency notices](docs/model
 including the Lessac voice dataset license linked from its model card. Model weights are
 downloaded separately and are not included in Git.
 
-The repository is ready to push to a GitHub repository of your choice. No remote repository
-has been created or published by setup.
+Built for the Trikon Software Labs AI internship assignment. Setup does not publish
+accounts, model weights, recordings or credentials. Background artwork has separate
+rights; see [its attribution](frontend/public/background/ATTRIBUTION.txt).

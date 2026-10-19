@@ -3,11 +3,14 @@
 ## Generated showcase
 
 The [English + Hindi demonstration](https://github.com/ss-sevesh/localvoice/releases/tag/demo-v1)
-is a roughly 2½-minute automated recording. Download the MP4 from the release or
-follow the video link in the README. Both the synthetic user's questions and the
+is available in the README's inline player at **1.25× speed (2:01)**, with pitch-preserved
+audio. The **original-speed recording (2:31)** remains available in the same release.
+Both the synthetic user's questions and the
 actual assistant replies are audible, along with a short English narration.
 
-The local export is `artifacts/local-voice-demo.mp4`.
+The local exports are `artifacts/local-voice-demo.mp4` and
+`artifacts/local-voice-demo-1.25x.mp4`. The faster version labels the playback speed;
+all displayed response latencies are measurements at original speed.
 
 Published recording: **2:31**, 1440×1000 H.264 video with AAC audio at 48 kHz.
 The six-turn take produced 138 streamed text updates and 13 browser playback
@@ -25,18 +28,18 @@ It shows a simple English introduction, name recall, two Hindi turns, and a spok
 interruption, followed by the live timing panel, architecture, models and hardware.
 No assistant response is hardcoded into the application or the capture script.
 
-| Approximate time | What the reviewer sees and hears |
-|---|---|
-| 00:00 | Landing page, introduction and synthetic-input disclosure |
-| 00:18 | “Hello. My name is Sam. Please remember it.” — VAD sends the turn after a pause |
-| 00:32 | “What is my name?” — English follow-up and session memory |
-| 00:46 | “नमस्ते। आप कैसे हैं?” — Hindi input and a Hindi spoken reply |
-| 01:02 | “मेरा नाम क्या है? हिंदी में बताइए।” — Hindi recall, streamed text and sentence audio |
-| 01:19 | A short cat story, interrupted by “No, wait. Just say hello.” |
-| 01:38 | First-voice delay from the recorded turn and the app's timing panel |
-| 01:51 | STT → LLM → TTS architecture and local VAD/WebSocket flow |
-| 02:05 | Actual models/devices, laptop hardware and measured first-voice delay |
-| 02:19 | Feature recap and repository link |
+| Original | 1.25× | What the reviewer sees and hears |
+|---|---|---|
+| 00:00 | 00:00 | Landing page, introduction and synthetic-input disclosure |
+| 00:18 | 00:14 | “Hello. My name is Sam. Please remember it.” — VAD sends the turn after a pause |
+| 00:32 | 00:26 | “What is my name?” — English follow-up and session memory |
+| 00:46 | 00:37 | “नमस्ते। आप कैसे हैं?” — Hindi input and a Hindi spoken reply |
+| 01:02 | 00:50 | “मेरा नाम क्या है? हिंदी में बताइए।” — Hindi recall, streamed text and sentence audio |
+| 01:19 | 01:03 | A short cat story, interrupted by “No, wait. Just say hello.” |
+| 01:38 | 01:18 | First-voice delay from the recorded turn and the app's timing panel |
+| 01:51 | 01:29 | STT → LLM → TTS architecture and local VAD/WebSocket flow |
+| 02:05 | 01:40 | Actual models/devices, laptop hardware and measured first-voice delay |
+| 02:19 | 01:51 | Feature recap and repository link |
 
 Hinglish is supported by the application and covered by its browser tests. This
 particular demonstration focuses on simple English and Hindi conversation.
@@ -54,6 +57,14 @@ npx playwright install ffmpeg
 node scripts/record-demo.mjs
 cd ..
 .venv/Scripts/python scripts/mix_demo.py
+```
+
+For the faster release, speed up video timestamps and use FFmpeg's `atempo=1.25`
+audio filter, which preserves pitch. The 0.08-second trim removes a blank capture
+frame before the introduction. Both tracks use the same trim and speed:
+
+```powershell
+ffmpeg -y -i artifacts/local-voice-demo.mp4 -filter_complex "[0:v]trim=start=0.08,setpts=(PTS-STARTPTS)/1.25,drawtext=fontfile='C\:/Windows/Fonts/segoeui.ttf':text='1.25x playback - timings recorded at 1x':fontsize=14:fontcolor=white:x=w-tw-20:y=12:box=1:boxcolor=0x100d1e@0.85:boxborderw=6[v];[0:a]atrim=start=0.08,asetpts=PTS-STARTPTS,atempo=1.25[a]" -map "[v]" -map "[a]" -c:v libx264 -preset fast -crf 23 -pix_fmt yuv420p -c:a aac -b:a 128k -ar 48000 -movflags +faststart artifacts/local-voice-demo-1.25x.mp4
 ```
 
 The capture takes about 2½ minutes and uses installed Google Chrome. The recorder

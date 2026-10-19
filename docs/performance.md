@@ -2,12 +2,13 @@
 
 ## Published English + Hindi demo
 
-The 2:31 demonstration in GitHub Release `demo-v1` shows **1,833 ms** to first voice
+The demonstration in GitHub Release `demo-v1` (2:31 original, 2:01 at 1.25×) shows **1,833 ms** to first voice
 for its last recorded turn, from the final detected speech frame to browser playback
 start. The synthetic take verifies six turns, English/Hindi replies, streamed text
 and audio, and a spoken interruption. This is one observed turn; it does not replace
 or rerun the controlled 30-turn benchmark below. Both input and reply audio are
-present in the exported MP4; see `docs/demo.md` for chapters and the recording method.
+present in both exported MP4s. Playback speed does not change the original measured
+latency; see `docs/demo.md` for chapters and the recording method.
 
 ## One speaker: Kokoro Omega on CUDA
 
