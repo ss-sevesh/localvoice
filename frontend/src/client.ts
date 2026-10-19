@@ -1,10 +1,12 @@
 import type { MicVAD } from '@ricky0123/vad-web'
 import { AudioPlayer, encodePCM } from './audio'
-import type { Action, ServerEvent } from './state'
+import type { Action, InputLanguage, ServerEvent } from './state'
 import { disposeVad } from './vad-cleanup'
 
 /** Owns browser resources; React only observes their user-visible state. */
 export class VoiceClient {
+  inputLanguage: InputLanguage = 'auto'
+  private speechLanguage: InputLanguage = 'auto'
   private socket: WebSocket | null = null
   private vad: MicVAD | null = null
   private player: AudioPlayer | null = null
@@ -66,7 +68,7 @@ export class VoiceClient {
       const vad = await MicVAD.new({
         ortConfig: ort => { ort.env.wasm.numThreads = 1; ort.env.logLevel = 'error' },
         model: 'v5', startOnLoad: false,
-        baseAssetPath: '/vad/', onnxWASMBasePath: '/vad/',
+        baseAssetPath: '/vad/', onnxWASMBasePath: new URL('/vad/', location.href).href,
         redemptionMs: 600, preSpeechPadMs: 300, minSpeechMs: 250,
         positiveSpeechThreshold: 0.6, negativeSpeechThreshold: 0.35,
         getStream: async () => {
@@ -84,16 +86,21 @@ export class VoiceClient {
           if (epoch !== this.epoch) return
           if (probability.isSpeech > 0.35) this.lastVoiceAt = performance.now()
         },
-        onSpeechRealStart: () => {
+        onSpeechStart: () => {
           if (epoch !== this.epoch || !this.active) return
           this.interrupt()
+          this.speechLanguage = this.inputLanguage
           this.dispatch({ type: 'mic', value: true })
+        },
+        onSpeechRealStart: () => {
+          if (epoch !== this.epoch || !this.active) return
           this.limitTimer = setTimeout(() => {
             this.fail(new Error('Recording reached 30 seconds. Start again with a shorter message.'))
           }, 30_000)
         },
         onVADMisfire: () => {
           if (epoch !== this.epoch) return
+          clearTimeout(this.limitTimer)
           this.dispatch({ type: 'mic', value: false })
         },
         onSpeechEnd: audio => {
@@ -111,7 +118,7 @@ export class VoiceClient {
           this.firstPlayed = false
           this.dispatch({ type: 'begin', turn: this.turn })
           this.dispatch({ type: 'metrics', value: { endpoint_ms: this.sentAt - this.lastVoiceAt } })
-          this.send({ type: 'speech', turn_id: this.turn, pcm: encodePCM(audio) })
+          this.send({ type: 'speech', turn_id: this.turn, pcm: encodePCM(audio), input_language: this.speechLanguage })
         },
       })
       if (epoch !== this.epoch) { await disposeVad(vad); return }
@@ -184,6 +191,14 @@ export class VoiceClient {
 
   private handle(event: ServerEvent) {
     if (event.type === 'error' && (event.turn_id === undefined || event.turn_id === this.turn)) {
+      if (event.recoverable) {
+        this.player?.stop()
+        this.send({ type: 'cancel' })
+        this.turn = -1
+        this.serverDone = false
+        this.dispatch({ type: 'recoverable', message: event.message ?? 'Please try again.' })
+        return
+      }
       this.fail(new Error(event.message ?? 'The local pipeline failed.'))
       return
     }

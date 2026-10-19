@@ -3,15 +3,61 @@
 import base64
 import binascii
 import re
+import unicodedata
 
 import numpy as np
 
 SYSTEM = (
-    "You are Local Voice, a friendly conversational assistant. Reply in English using "
-    "one or two short sentences, usually under 45 words. Use plain spoken text without "
+    "You are Local Voice, a friendly conversational assistant. "
+    "Match the language of the user's latest utterance, including any mix of languages, "
+    "even when it changes from earlier turns. Follow explicit requests for a reply language. "
+    "Use native scripts, not romanized transliterations. "
+    "Reply using one or two short sentences, usually under 45 words. Use plain spoken text without "
     "markdown, lists, or emojis. Remember details in this conversation. Be honest when "
     "unsure. You have no live internet or tools."
 )
+
+
+class LanguageError(ValueError):
+    """A recoverable recognition/language failure, never raw text to display."""
+
+
+class RecognitionError(ValueError):
+    """Audio was too uncertain to accept as user speech."""
+
+
+def ensure_supported_text(text: str) -> str:
+    for char in text:
+        if unicodedata.category(char)[0] not in {"L", "M"}:
+            continue
+        if ("\u0900" <= char <= "\u097f" or "\u0300" <= char <= "\u036f"
+                or unicodedata.name(char, "").startswith("LATIN")):
+            continue
+        raise LanguageError(
+            "I couldn't recognize that in English or Hindi. "
+            "Choose English or Hindi/Hinglish above and try again."
+        )
+    return text
+
+
+def speech_parts(text: str) -> list[tuple[bool, str]]:
+    """Keep English phrases together; use Hindi synthesis for Devanagari spans."""
+    parts = re.split(r"([A-Za-z]+(?:[A-Za-z0-9'’ ,:\-]*[A-Za-z0-9])?)", text)
+    result = []
+    for part in parts:
+        if part.strip() and any(c.isalnum() for c in part):
+            hindi = any("\u0900" <= c <= "\u097f" and c.isalpha() for c in part)
+            result.append((hindi, part.strip()))
+        elif result:
+            hindi, previous = result[-1]
+            result[-1] = (hindi, previous + part)
+    return result
+
+
+def has_mixed_scripts(text: str) -> bool:
+    return bool(re.search(r"[A-Za-z]{2,}", text)) and any(
+        "\u0900" <= char <= "\u097f" and char.isalpha() for char in text
+    )
 
 
 def decode_audio(encoded: str) -> np.ndarray | None:
@@ -33,7 +79,7 @@ def decode_audio(encoded: str) -> np.ndarray | None:
 
 def split_sentences(text: str, final: bool = False) -> tuple[list[str], str]:
     sentences = []
-    while match := re.search(r"[.!?](?:[\"']?)(?:\s+|$)", text):
+    while match := re.search(r"(?:[.!?][\"']?(?:\s+|$)|[।॥]\s*)", text):
         end = match.end()
         sentences.append(text[:end].strip())
         text = text[end:]
@@ -46,7 +92,7 @@ def split_sentences(text: str, final: bool = False) -> tuple[list[str], str]:
     if final and text.strip():
         sentences.append(text.strip())
         text = ""
-    return sentences, text
+    return [s for s in sentences if any(c.isalnum() for c in s)], text
 
 
 class History:

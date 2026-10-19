@@ -9,7 +9,13 @@ from contextlib import suppress
 
 import numpy as np
 
-from app.core import History, split_sentences
+from app.core import (
+    History,
+    LanguageError,
+    RecognitionError,
+    ensure_supported_text,
+    split_sentences,
+)
 from app.models import Models
 
 logger = logging.getLogger(__name__)
@@ -33,11 +39,11 @@ class Conversation:
                 await self.task
             self.task = None
 
-    async def start(self, turn_id: int, audio: np.ndarray):
+    async def start(self, turn_id: int, audio: np.ndarray, input_language="auto"):
         await self.cancel()
         self.turn_id = turn_id
         self.window = asyncio.Semaphore(2)
-        self.task = asyncio.create_task(self._run(turn_id, audio))
+        self.task = asyncio.create_task(self._run(turn_id, audio, input_language))
 
     def ack(self, turn_id: int, index: int):
         previous = self.history.acknowledged
@@ -49,7 +55,7 @@ class Conversation:
         if turn_id == self.turn_id:
             await self.send({"type": event_type, "turn_id": turn_id, **payload})
 
-    async def _run(self, turn_id: int, audio: np.ndarray):
+    async def _run(self, turn_id: int, audio: np.ndarray, input_language):
         started = time.perf_counter()
         metrics = {}
         consumer = None
@@ -59,13 +65,15 @@ class Conversation:
 
         try:
             await self._emit(turn_id, "state", state="transcribing")
-            transcript = await self.models.transcribe(audio)
+            recognition = await self.models.transcribe(audio, input_language)
+            transcript = ensure_supported_text(recognition.text)
+            metrics.update(recognition.metrics)
             metrics["stt_ms"] = elapsed()
             if not transcript:
                 await self._emit(turn_id, "empty")
                 return
             self.history.begin(turn_id, transcript)
-            await self._emit(turn_id, "transcript", text=transcript)
+            await self._emit(turn_id, "transcript", text=transcript, language=recognition.language)
             await self._emit(turn_id, "state", state="generating")
             queue: asyncio.Queue[str | None] = asyncio.Queue(maxsize=2)
 
@@ -83,13 +91,15 @@ class Conversation:
                         wav=base64.b64encode(wav).decode(),
                     )
                     if index == 0:
+                        metrics["tts_first_chunk_ms"] = (time.perf_counter() - synth_started) * 1000
                         metrics["first_audio_ready_ms"] = elapsed()
                     index += 1
                 metrics["tts_ms"] = round(tts_ms, 1)
 
             consumer = asyncio.create_task(speak())
             pending = ""
-            async for delta in self.models.chat(self.history.messages()):
+            async for delta in self.models.chat(self.history.messages(), metrics=metrics):
+                ensure_supported_text(delta)
                 metrics.setdefault("first_text_ms", elapsed())
                 await self._emit(turn_id, "text_delta", text=delta)
                 sentences, pending = split_sentences(pending + delta)
@@ -104,6 +114,12 @@ class Conversation:
             await self._emit(turn_id, "turn_done", metrics=metrics)
         except asyncio.CancelledError:
             raise
+        except (LanguageError, RecognitionError) as exc:
+            await self._emit(
+                turn_id, "error", message=str(exc), recoverable=True,
+                code=("unclear_speech" if isinstance(exc, RecognitionError)
+                      else "unsupported_language"),
+            )
         except Exception as exc:
             logger.exception("Turn %s failed", turn_id)
             await self._emit(turn_id, "error", message=str(exc))

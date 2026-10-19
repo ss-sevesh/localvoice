@@ -6,6 +6,11 @@ import pytest
 from app.core import History, decode_audio, split_sentences
 
 
+def test_punctuation_and_emoji_only_fragments_are_not_sent_to_synthesis():
+    assert split_sentences("You're welcome! 😊", final=True) == (["You're welcome!"], "")
+    assert split_sentences("...", final=True) == ([], "")
+
+
 def test_audio_rejects_invalid_oversized_and_silent_inputs():
     for value in ("not base64!", base64.b64encode(b"x").decode()):
         with pytest.raises(ValueError):
@@ -27,6 +32,13 @@ def test_sentences_keep_incomplete_text_until_finish():
     assert ready == ["Hello there."]
     assert pending == "How are"
     assert split_sentences(pending, final=True) == (["How are"], "")
+
+
+def test_hindi_sentences_stream_at_danda_even_without_spaces():
+    assert split_sentences("नमस्ते।कैसे हैं आप? Next") == (
+        ["नमस्ते।", "कैसे हैं आप?"], "Next",
+    )
+    assert split_sentences("ठीक है॥ Next sentence") == (["ठीक है॥"], "Next sentence")
 
 
 def test_history_only_keeps_audio_acknowledged_in_order():

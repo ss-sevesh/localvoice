@@ -2,6 +2,15 @@ import { describe, expect, it } from 'vitest'
 import { initialState, reducer } from './state'
 
 describe('conversation state', () => {
+  it('recovers a language error without disconnecting the microphone', () => {
+    let state = reducer({ ...initialState, active: true }, { type: 'begin', turn: 1 })
+    state = reducer(state, { type: 'recoverable', message: 'Choose English or Hindi.' })
+    expect(state.active).toBe(true)
+    expect(state.phase).toBe('listening')
+    expect(state.turn).toBe(-1)
+    state = reducer(state, { type: 'begin', turn: 2 })
+    expect(state.error).toBeNull()
+  })
   it('does not label a completed reply interrupted when the next utterance starts', () => {
     let state = reducer(initialState, { type: 'begin', turn: 1 })
     state = reducer(state, { type: 'server', event: { type: 'text_delta', turn_id: 1, text: 'Finished.' } })
