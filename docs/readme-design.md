@@ -12,6 +12,8 @@ Design contract:
 - Lead with an animated SVG wordmark, a concise purpose and useful section links.
 - Place a playable, audible demonstration in the README itself. Keep original-speed
   and direct-download fallbacks available.
+  Use a bare GitHub user-attachment URL: GitHub's repository renderer removes HTML
+  video tags, even when the Markdown API accepts them.
 - Label 1.25× playback; the on-screen measurements remain original 1× measurements.
 - Use one short silent GIF as an interface preview, with a clearly labelled link to
   the full audible video. SVG animation respects reduced-motion preferences.
