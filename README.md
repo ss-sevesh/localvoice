@@ -29,6 +29,8 @@
 
 ## Watch the demo
 
+[![Local Voice demo — AI that talks back in English, Hindi and Hinglish](docs/assets/demo-thumbnail.png)](https://github.com/user-attachments/assets/3bb6e61a-1cca-450a-a1ea-0792584dde63)
+
 **English + Hindi · 2:01 · 1.25× playback · sound on**
 
 https://github.com/user-attachments/assets/3bb6e61a-1cca-450a-a1ea-0792584dde63
