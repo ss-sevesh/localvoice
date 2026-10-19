@@ -13,6 +13,10 @@ details. No model response is hardcoded into the application or the capture scri
 
 To reproduce, keep the backend running and install FFmpeg on PATH:
 
+Create an account in the UI first. Set `LOCALVOICE_EMAIL` and `LOCALVOICE_PASSWORD`
+in the recording terminal's environment; the capture script uses these to log in
+before opening the voice workspace. Do not put credentials in source or recordings.
+
 ```powershell
 .venv/Scripts/python scripts/make_fixtures.py
 cd frontend

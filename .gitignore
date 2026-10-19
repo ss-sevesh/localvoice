@@ -7,8 +7,11 @@ node_modules/
 dist/
 models/
 .env
+data/
+purple-desert/
 *.wav
 *.mp4
+!frontend/public/background/purple-desert.mp4
 artifacts/
 frontend/public/vad/
 frontend/test-results/

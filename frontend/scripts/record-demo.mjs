@@ -1,3 +1,4 @@
+import { openWorkspace } from './account.mjs'
 // Automated showcase: synthetic microphone, real local inference and playback buffers.
 import { chromium } from '@playwright/test'
 import { mkdir, writeFile } from 'node:fs/promises'
@@ -46,7 +47,7 @@ await page.addInitScript(() => {
     return stream
   }
 })
-await page.goto('http://127.0.0.1:8000/')
+await openWorkspace(page)
 const started = Date.now()
 const at = async second => {
   const delay = second * 1000 - (Date.now() - started)

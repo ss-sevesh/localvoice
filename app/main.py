@@ -6,14 +6,17 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from app.auth import COOKIE, LOCAL_ORIGINS, Accounts
+from app.auth import router as auth_router
 from app.conversation import Conversation
 from app.core import decode_audio
 from app.models import MODEL_NAME, ROOT, Models
 
 
-def create_app(models=None):
+def create_app(models=None, accounts_path=None):
     @asynccontextmanager
     async def lifespan(app):
+        app.state.accounts = Accounts(accounts_path or ROOT / "data/accounts.sqlite3")
         app.state.models = models or Models()
         loading = asyncio.create_task(app.state.models.load())
         yield
@@ -23,6 +26,7 @@ def create_app(models=None):
         await app.state.models.close()
 
     app = FastAPI(title="Local Voice", lifespan=lifespan)
+    app.include_router(auth_router)
 
     @app.get("/api/health")
     async def health():
@@ -30,17 +34,22 @@ def create_app(models=None):
         return {
             "ready": engine.ready, "error": engine.error,
             "load_seconds": engine.load_seconds,
-            "models": {"stt": "base.en · INT8", "llm": MODEL_NAME, "tts": "Piper Lessac"},
+            "stt_device": getattr(engine, "stt_device", "unknown"),
+            "tts_device": getattr(engine, "tts_device", "unknown"),
+            "stt_compute_type": getattr(engine, "stt_compute_type", "unknown"),
+            "warning": getattr(engine, "warning", None),
+            "models": {
+                "stt": f"{getattr(engine, 'stt_model', 'medium')} · multilingual",
+                "llm": MODEL_NAME,
+                "tts": "Kokoro · Omega (same speaker for EN / HI)",
+            },
         }
 
     @app.websocket("/ws/conversation")
     async def conversation(ws: WebSocket):
         # Local-only application: deny cross-site WebSocket connections.
         origin = ws.headers.get("origin", "")
-        if origin not in {
-            "http://127.0.0.1:8000", "http://localhost:8000",
-            "http://127.0.0.1:5173", "http://localhost:5173",
-        }:
+        if origin not in LOCAL_ORIGINS or not app.state.accounts.user(ws.cookies.get(COOKIE)):
             await ws.close(code=1008)
             return
         await ws.accept()
@@ -49,6 +58,9 @@ def create_app(models=None):
         try:
             while True:
                 raw = await ws.receive_text()
+                if not app.state.accounts.user(ws.cookies.get(COOKIE)):
+                    await ws.close(code=1008)
+                    break
                 try:
                     if len(raw) > 1_300_000:
                         raise ValueError("Recording exceeds 30 seconds.")
@@ -68,13 +80,16 @@ def create_app(models=None):
                             raise ValueError("Models are not ready. Check setup and Ollama.")
                         if not isinstance(event.get("pcm"), str):
                             raise ValueError("Missing PCM audio.")
+                        input_language = event.get("input_language", "auto")
+                        if input_language not in ("auto", "en", "hi"):
+                            raise ValueError("Input language must be auto, en or hi.")
                         audio = decode_audio(event["pcm"])
                         last_turn = turn
                         if audio is None:
                             await session.cancel()
                             await ws.send_json({"type": "empty", "turn_id": turn})
                         else:
-                            await session.start(turn, audio)
+                            await session.start(turn, audio, input_language)
                     elif kind == "cancel":
                         await session.cancel()
                     elif kind == "reset":

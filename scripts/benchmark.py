@@ -6,15 +6,19 @@ import base64
 import io
 import json
 import statistics
+import sys
 import time
 import wave
 from pathlib import Path
 
 import numpy as np
+from account_session import session_cookie
 from piper import PiperVoice
 from websockets.asyncio.client import connect
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
 PROMPTS = [
     "My name is Mira. Please remember it.", "What is my name?",
     "What makes the sky blue?", "Give me one tip for a job interview.",
@@ -38,6 +42,13 @@ def make_pcm(voice, text):
     return resampled.tobytes()
 
 
+def make_mixed_pcm(english, hindi, text):
+    from app.core import speech_parts
+
+    return b"".join(make_pcm(hindi if is_hindi else english, part)
+                    for is_hindi, part in speech_parts(text))
+
+
 async def run(count, output):
     voice = PiperVoice.load(str(ROOT / "models/en_US-lessac-medium.onnx"))
     fixtures = [make_pcm(voice, text) for text in PROMPTS[:count]]
@@ -49,7 +60,7 @@ async def run(count, output):
     rows = []
     async with connect(
         "ws://127.0.0.1:8000/ws/conversation", origin="http://127.0.0.1:8000",
-        max_size=4_000_000,
+        max_size=4_000_000, additional_headers={"Cookie": await session_cookie()},
     ) as ws:
         for turn, (prompt, pcm) in enumerate(zip(PROMPTS, fixtures, strict=False), 1):
             started = time.perf_counter()
