@@ -31,7 +31,7 @@
 
 **English + Hindi · 2:02 · 1.25× playback · sound on**
 
-https://github.com/user-attachments/assets/6618d66d-06e4-46e4-a843-9ac6cde7aeba
+https://github.com/user-attachments/assets/c596d243-73ca-4f5f-b2ab-8286ae9f9b7a
 
 <p align="center">
   <a href="https://github.com/ss-sevesh/localvoice/releases/download/demo-v1/local-voice-demo-1.25x.mp4">Download the 1.25× version</a> ·
