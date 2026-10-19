@@ -6,6 +6,25 @@ generation, voice synthesis, and voice activity detection run on your machine.
 
 **React + TypeScript · FastAPI · Faster-Whisper · Ollama/Qwen · Kokoro · Silero VAD**
 
+**[Watch/download the English + Hindi demo (about 2½ minutes)](https://github.com/ss-sevesh/localvoice/releases/download/demo-v1/local-voice-demo.mp4)**
+
+Audible synthetic questions, real assistant replies, English/Hindi conversation,
+memory, streaming, VAD, a spoken interruption, architecture and live timings.
+[Chapters and recording method](docs/demo.md).
+
+[![Watch the English and Hindi demonstration](docs/demo-preview.jpg)](https://github.com/ss-sevesh/localvoice/releases/download/demo-v1/local-voice-demo.mp4)
+
+## Submission deliverables
+
+| Deliverable | Location |
+|---|---|
+| Complete source code | [Repository](https://github.com/ss-sevesh/localvoice) |
+| Installation and setup | [Windows instructions below](#run-on-windows) |
+| 2–3 minute demonstration | [English + Hindi MP4](https://github.com/ss-sevesh/localvoice/releases/tag/demo-v1) |
+| STT → LLM → TTS architecture | [Diagram below](#how-it-works) and [architecture notes](docs/architecture.md) |
+| Models and hardware | [Model details](docs/models.md) and [hardware requirements below](#run-on-windows) |
+| Observed response latency | [Measurement method and results](docs/performance.md) |
+
 ![Local Voice interface](docs/interface.png)
 
 [Preview the signup screen](docs/signup.png) · [Design and account flow](docs/account-experience.md)

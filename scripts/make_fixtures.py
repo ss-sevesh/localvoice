@@ -42,10 +42,4 @@ if __name__ == "__main__":
             2, make_pcm(voice, "Explain how neural networks learn."), 5,
             make_pcm(interruption_voice, text), 4,
         ])
-    write_fixture("demo-microphone.wav", [
-        2, make_pcm(voice, "My name is Mira and I love hiking. Please remember that."), 12,
-        make_pcm(voice, "What is my name and what do I enjoy?"), 12,
-        make_pcm(voice, "Explain how neural networks learn."), 5,
-        make_pcm(voice, "Actually, just tell me one fact about cats."), 45,
-    ])
     print("Synthetic browser microphone fixtures ready.")

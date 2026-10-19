@@ -1,5 +1,14 @@
 # Observed performance
 
+## Published English + Hindi demo
+
+The 2:31 demonstration in GitHub Release `demo-v1` shows **1,833 ms** to first voice
+for its last recorded turn, from the final detected speech frame to browser playback
+start. The synthetic take verifies six turns, English/Hindi replies, streamed text
+and audio, and a spoken interruption. This is one observed turn; it does not replace
+or rerun the controlled 30-turn benchmark below. Both input and reply audio are
+present in the exported MP4; see `docs/demo.md` for chapters and the recording method.
+
 ## One speaker: Kokoro Omega on CUDA
 
 Final same-speaker run: 30 synthetic Chrome microphone turns (10 per language), with
